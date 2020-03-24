@@ -164,6 +164,8 @@ Feature engineering은 최악의 경우 노력에 비해 아무 성과도 얻지
 - Square Matrix
   - n*m 크기의 matrix A가 square matrix $\iff$ n = m
   - <u>Non-singular</u> square matrix: 각 row vector가 linearly independent한 square matrix
+    - Non-singular: $A^{-1}$ 존재
+    - Singular: $A^{-1}$ 이 존재하지 않음
 
 ### Identity and Inverse Matrices
 
@@ -201,17 +203,60 @@ Feature engineering은 최악의 경우 노력에 비해 아무 성과도 얻지
 
 #### Eigenvector & Eigenvalue
 
-Square matrix A가 주어졌을 때,
+- Square matrix A가 주어졌을 때, $Av = \lambda v $를 만족하는 scalar $\lambda$와 vector $v$가 있다면 <u>$\lambda$가 eigenvalue, $v$가 eigenvector가 된다.</u>
 
+  - A에 대해 여러 쌍의 eigenvalue-eigenvector가 존재할 수 있다.
 
+    - **A가 n*n 크기일 경우, n개의 eigenvalue-eigenvector 쌍이 존재**
 
+  - $Av$는 linear transformation
 
+    - Linear transformation: mapping from a vector space to other vector space
 
+      ![image-20200324010516633](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200324010516633.png)
 
+      - vector $v$가 존재할 때, A(transform matrix)와 곱하면 A에서 의미하는 linear transformation이 일어난 값이 결과가 된다.
 
-#### The Rank of a matrix
+- 예시
 
-#### Linear Transformation
+  - $A = \begin{pmatrix} 2&1\\1&-1\end{pmatrix}, u=\begin{pmatrix} 1\\1\end{pmatrix}$일 때, $u' = Au = \begin{pmatrix}3\\0 \end{pmatrix}$
+  - ![image-20200324031949956](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200324031949956.png)
+  - $Ae_1 = \lambda_1e_1, Ae_2 = \lambda_2e_2$를 만족!
+  - **$(e, \lambda)$ 쌍의 의미**
+    - **특정 vector에 대한 Linear transformation을 표현하는 각각의 절차 중 하나가 됨**
+      - 각 쌍 하나씩만 수행하면 안되고, n개를 모두 수행해야 u에서 u'이 된다.
+      - 다시 말하면, 각 쌍을 모두 찾아내면 Linear transformation에 대한 정보를 알 수 있다.
+    - e는 기준 vector가 되므로 Linear transformation A를 수행한 후의 결과 vector도 e와 같은 방향을 유지
+    - 각 쌍에 의한 변환의 경우 eigenvalue($\lambda$)의 절댓값만큼 vector가 stretch되며, 부호가 음수면 vector는 해당 eigenvector($e$)로부터 reflect된다. <span style="color:red">**잘못된 설명**</span>
 
-#### Eigenvector and eigenvalue
+- eigenvector & eigenvalue의 의미를 통해 이를 계산 없이 구할 수도 있다.
 
+  1.  $A = \begin{pmatrix}1&0&0\\0&1&0\\0&0&1\end{pmatrix}$를 예로 들면 A는 identity matrix 이므로
+  2. x축을 따르며, reflection 없고, stretch 없음 $\to \lambda_1 = 1, e_1=(1,0,0)$
+     y축을 따르며, reflection 없고, stretch 없음 $\to \lambda_2 = 1, e_2=(0,1,0)$
+     z축을 따르며, reflection 없고, stretch 없음 $\to \lambda_3= 1, e_3=(0,0,1)$
+
+### Fully Connected Layer
+
+- $\sigma(Wh_i+b)$: Fully Connected Layer in Deep Learning
+  - Logistic Regression에서 특별한 의미를 가지고 있음
+  - $W$: linear transformation matrix
+  - $h_i$: hidden vector at layer $i$
+  - $b$: bias vector
+  - $\sigma$: <u>non-linear</u> activation function (Ex. ReLU)
+- **즉, 하나의 Fully connected layer는 이전의 hidden vector를 linear transform한 후 bias를 더한 값을 activation function에 통과시킨 결과!**
+  - $\Rightarrow$Fully Connected Layer는 "non-linear transformation"
+
+<img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200324223959491.png" alt="image-20200324223959491" style="zoom:50%;" />
+
+![image-20200324225542216](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200324225542216.png)
+
+- Classification 문제에서 빨간 class와 파란 class를 나눠야 할 경우,
+
+  - 어떤 linear hyperplane도 두 class를 성공적으로 구분할 수 없다.
+
+  - 하지만, 여러 Fully Connected Layer를 활용한다면(a series of FC layers)
+
+    <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200324223959491-tile_2.png" alt="image-20200324223959491-tile_2" style="zoom:33%;" />
+
+  - 두 class를 나눌 수 있는 hyperplane이 존재할 수 있는 형태로 transform될 수 있다.
