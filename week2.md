@@ -1,1 +1,212 @@
 # 2. Probability & Density Estimation
+
+## Probability
+
+- $X$: random variable(변수)
+- $P(x)$: $X=x$(특정 값)일 때의 확률
+- Ex) Uniform distribution(특정 범위에서 균등한 \_-\_ 모양의 분포)을 따르는 random variable
+  - <u>Discrete</u> Uniform Distribution
+    - Given $k$ possible options $\{x_1, x_2, ..., x_k\}$
+    - $P(X=x_i) = {1\over k}$ for all $i$
+    - $\underset{i}\sum P(X=x_i)=1$
+    - Probability Mass Function 사용
+  - <u>Continuous</u> Uniform Distribution
+    - 이 경우는 확률을 $P(X=x)$ 형태로 정의할 수 없음(~~Pointwise probability~~)
+      - $P(X=x)=0$이라는 뜻과는 다름
+    - 대신 $P(X\in[a,b])$ 형태로 정의함
+    - $P(X\in[a,b]) \equiv \int_a^b p(x)dx = \int_a^b P(X=x)dx$ 
+    - Probability Density Function
+    - Ex) Uniform dist. between 1 and 3 $(U[1,3]$로 표기)
+      - ![image-20200328150448907](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200328150448907.png)
+      - 각 point에서의 probability는 제대로 정의할 수 없음
+        - 위의 예시의 경우 P(X=1)=0.5 이지만, 그렇다고 X=1일 때의 확률이 0.5라는 것은 아니다.
+          - continuous의 경우 확률을 P(X=x) 형태로 정의하는 것이 아니므로!
+        - X=1일 때의 확률을 구해보자면 정의 상a,b가 같으므로 확률은 0이 된다.
+
+### Joint, Marginal, Conditional Probability
+
+#### Joint Probability
+
+- Random variable이 2개 이상 존재할 때의 확률
+- Random variable이 X, Y 2개일 경우의 joint probability는 $P(X=x, Y=y)$로 표현
+  - Probability에서 ,(Comma)는 교집합을 의미
+  - X와 Y가 independent한 경우 $P(X=x, Y=y) = P(X=x)*P(Y=y)$
+- Ex) 주사위 2개를 던졌을 때의 결과
+
+#### Marginal Probability
+
+- Random variable이 여러 개일 때 probability를 하나의 random variable로 표현하려 할 때 사용
+
+- Sum Rule
+  - Discrete Random Variable: $P(X=x)=\underset{y}\sum P(X=x, Y=y)$
+  - Continuous Random Variable: $P(X=x)=\int P(X=x, Y=y) dy$
+
+#### Conditional Probability
+
+- 조건부 확률
+- $P(Y=y\vert X=x) = {P(Y=y, X=x)\over P(X=x)}$
+- Chain Rule
+  - Joint probability distribution이 얼마나 많은 random variable들로 표현되어 있어도, contidional probability로 decompose될 수 있다.
+  - $P(a, b, c) = P(a|b,c)*P(b,c) = P(a|b,c)*P(b|c)*P(c)$
+    - 일반적인 ML에서 $P(a|b,c), P(b|c)$와 같은 값이 주로 계산되어 있으므로, 이 값들을 통해 $P(a,b,c)$를 구하게 된다.
+- Conditional Independence
+  - a와 b가 independent할 때,  $P(a,b|c) = P(a|c)*P(b|c)$
+- $P(Y=y\vertX)$
+
+### Expectation, Variance, and Covariance
+
+#### Expectation
+
+- $E_{X\sim P}[f(x)] = \begin{cases}\underset{x}\sum P(X=x)f(x)\\\int P(X=x)f(x)dx\end{cases}$
+  - X follows a distribution P
+- $E[\alpha f(x)+\beta g(x)] = \alpha E[f(x)]+\beta E[g(x)]$
+
+#### Variance
+
+- $Var(f(x)) = E[(f(x)-E[f(x)])^2]$
+
+#### Covariance
+
+각 random variable이 얼마나 linearly related 되어있는지 알 수 있는 지표
+
+- $Cov(f(x), g(y)) = E[{\color{Blue}(f(x)-E[f(x)])}{\color{Red}(g(y)-E[g(y)])}]$
+  - $f(x)=g(y)$, 즉 $X=Y$일 경우 $Cov(f(x), g(y)) = Var(f(x))$
+  - Ex) 예시
+    - $f(x)$: income of person $x\in$[\$10K, \$100K], $E[f(x)]$=30K 
+    - $g(y)$: age of person $y\in$[20, 60], $E[g(y)]$=35
+    - ${\color{Blue}(f(x)-E[f(x)])}$가 양수인 경우 x는 평균보다 더 많은 수입을 가지며, 음수일 경우 x는 평균보다 적은 수입을 가짐
+    - ${\color{Red}(g(y)-E[g(y)])}$가 음수인 경우 x는 평균보다 더 나이가 많으며, 음수일 경우 x는 평균보다 더 나이가 적음
+    - $Cov(f(x), g(y))$가 높은 경우 $\iff$ <span style="color:blue">Blue</span>, <span style="color:Red">Red</span> term이 같은 부호를 가지고, <u>동시에</u> 그들의 절대값 또한 크다. 
+      - Cov의 값이 높은 경우(양의 방향으로 클 경우): x와 y가 비슷한 양상으로 움직인다.
+      - Cov의 값이 낮은 경우(음의 방향으로 클 경우): x와 y가 반대 양상으로 움직인다.
+- Covariance의 문제점
+  - 예시와 같은 경우 x의 scale이 y의 scale보다 훨씬 크기 때문에, x의 영향을 더 많이 받게 된다.
+  - 즉, covariance는 더 scale이 큰 random variable에 bias된다.
+    - Fairness 문제 발생!
+  - 이러한 문제점을 해결하기 위해 나온 것이 "Correlation"!
+
+#### Correlation
+
+- $Corr(f(x), g(y)) = \frac{Cov(f(x), g(y)))}{\sigma_x*\sigma_y}$
+  - $Corr(f(x), (y))\in[-1,1]$
+- ![image-20200329153001316](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200329153001316.png)
+
+### Covariance and Independence
+
+- $Cov(F, G)=0 \nRightarrow$ F and G are "independent"
+  - 반례)
+    - random variable X는 U[-1, 1]을 따르고, random variable S는 1/2 확률로 1 또는 -1의 값을 가짐
+    - 그러면 X와 S는 independent.
+    - 여기서 새로운 random variable Y=S*X를 정의하면, Y는 X와 S에 dependent.
+    - 한편, E[X]=0, E[S]=0 이고, X와 S는 independent하므로 E[Y]=E[XS]=E[X]*E[S]=0.
+    - 여기서 Cov(X, Y)를 구하면 Cov(X, Y)=E[(X-0)\*(Y-0)]=E[XY]=E[X\*XS]=E[S]\*E[X]\*E[X]=0.
+    - 즉, X와 Y가 independent하지 않음에도 불구하고 Cov(X, Y)가 0이 됨을 알 수 있다.
+- F and G are "independent" $\Rightarrow Cov(F, G)=0$
+
+### Bayes’ Rule
+
+- "$P(\theta)$와 $P(X|\theta)$를 통해 **$P(\theta|X)$를 구하는 것**"
+
+  - $P(\theta)$: Prior probability
+    - parameter로 구성된 확률모형
+    - 일반적으로 미리 주어짐
+  - $P(X|\theta)$: Likelihood
+    - parameter $\theta#가 주어졌을 때, 관측치 X가 나타날 확률
+  - $P(\theta|X)$: Posterior probability
+    - 관측치 X가 주어졌을 때, $\theta$의 parameter를 가지는 확률모형
+  - 즉, **"Prior probability와 likelihood를 통해 Posterior probability를 구하는 것"**
+    - Bayes' rule은 posterior를 구하기 위한 효율적인 방법
+
+- $P(\theta|X) = \frac{P(\theta)P(X|\theta)}{P(X)}$
+
+  - 즉, Posterior는 prior와 likelihood에 비례
+  - 참고로, $P(X)=\underset{\theta}\sum P(X|\theta)*P(\theta)$로 구할 수 있으므로 따로 알 필요 없다.
+
+- Random variable의 parameter를 estimate
+
+  - 주어진 데이터를 설명하기 위해, 머신러닝 모델의 파라미터를 learn해야 함
+
+  - 2가지 방법: **MLE**(Maximum <u>Likelihood</u> Estimation), **MAP**(Maximum A <u>Posteriori</u> estimation, Bayes' Rule과 연관)
+
+  - Ex) 동전 뒤집기
+
+    1. X=1일 때 앞면, X=0일 때 뒷면
+
+       - 이 때 동전 뒤집기가 completely random하다면, P(X=1) = P(X=0) = 50%.
+
+    2. 이 때, 동전 뒤집기로 많은 돈을 잃어서, 이 게임이 조작된 동전을 사용한다고 의심한다.
+
+       - 즉, P(X=1)$\neq$P(X=0)인 동전이 사용되고 있다고 의심
+
+    3. <u>현재까지 $\alpha_H$번의 앞면과 $\alpha_T$번의 뒷면이 나왔을 때**(순서 포함)**, 이 동전에 대한 확률 P(X=1)를 어떻게 구할까?</u> 
+
+       - MLE(Likelihood를 최대로)
+
+         1.  $P(X=1)=\theta$로 두면, 자동적으로 $P(X=0)=1-\theta$가 된다. (Bernoulli trial)
+
+         2. 이 모델이는 1개의 scalar parameter $\theta$가 존재하며, 주어진 data($\alpha_H, \alpha_T$)를 통해 이를 learn해야 한다.
+
+         3. 각 flip은 independent하므로, $P(\alpha_H, \alpha_T|\theta)\equiv\theta^{\alpha_H}(1-\theta)^{\alpha_T}$(Binomial Distribution)
+
+            -  여기서 $\alpha_H, \alpha_T$는 $\alpha_H$번의 앞면과 $\alpha_T$번의 뒷면이 나온 모든 경우를 가리키는게 아니라.. 지금까지의 시행을 모두 기록했을 때  $\alpha_H$번의 앞면과 $\alpha_T$번의 뒷면이 나왔고, 이 관측치 D=HHT...HTHT 하나만을 의미하는듯. 설명이 부실했음
+            - 조건부 뒤에 붙는 $\theta$는 "동전의 특이한 모양에 의해, 구하고자 하는 P(X=1)의 값이 $\theta$로 주어졌을 경우(given)" 라는 의미!
+
+            - 이 때, $P(\alpha_H, \alpha_T|\theta)$를 likelihood function이라고 부름
+            - Likelihood function: probability of observation given model parameter
+            - **이 값을 최대로 하는 $\theta$를 찾는다!**
+            - 즉, $\alpha_H$+$\alpha_T$번 던졌을 때 앞면이 $\alpha_H$번 나올 가능성이 가장 높도록 하는 $\theta$를 찾는다.
+
+         4. $\theta_{MLE}^* = \underset{\theta}{\arg\max}\ln{P(\alpha_H, \alpha_T|\theta)} = \underset{\theta}{\arg\max}\ln{\theta^{\alpha_H}(1-\theta)^{\alpha_T}}$를 구한다.
+
+            - argmax 함수는 해당 식을 최대로 만드는 변수를 출력한다.
+            - *은 optimal value를 의미
+            - log를 씌운 이유는 argmax 값이 바뀌지 않는 선에서 계산을 더 쉽게 할 수 있기 때문?
+
+         5. $\ln{\theta^{\alpha_H}(1-\theta)^{\alpha_T}}$이 concave function이므로, 이에 대한 도함수를 0으로 만드는 $\theta$값이 구하고자 하는 argmax 값이 된다.
+
+            - $\frac{d}{d\theta}\ln{\theta^{\alpha_H}(1-\theta)^{\alpha_T}}=0$
+            - $\frac{\delta}{\delta\theta}(\alpha_H \ln\theta+\alpha_T \ln(1-\theta)) = \frac{\alpha_H}{\theta}-\frac{\alpha_T}{1-\theta} = 0$
+            - $\theta_{MLE}^*=\frac{\alpha_H}{\alpha_H+\alpha_T}$
+            - 즉, 전체 시행 중 앞면이 $\alpha_H$번 나올 가능성이 가장 높은 확률 $\theta$는 위의 값이 된다.
+
+       - MAP(Posterior를 최대로)
+
+         1. let $P(\theta)\sim \mathsf{Beta}(\beta_H, \beta_T)\equiv \frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)}$ (prior distribution)
+            - Beta distribution 사용
+            - 게임에 참여하기 전에, 확률이 $\theta$라고 미리 가정
+         2. $P(\alpha_H, \alpha_T|\theta)\equiv\theta^{\alpha_H}(1-\theta)^{\alpha_T}$ (likelihood)
+         3. posterior $\propto$ prior * likelihood = $\theta^{\alpha_H}(1-\theta)^{\alpha_T}\cdot\frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)} $
+            - 즉, posterior $\propto \frac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$
+         4. $\theta_{MAP}^* = \underset{\theta}{\arg\max}\frac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$를 구한다.
+            - 식의 형태가 beta distribution과 비슷한 형태이므로, 이를 활용
+              - $\mathsf{Beta}(\alpha_H+\beta_H, \alpha_T+\beta_T)$
+         5. 위의 식이 $\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}$에 비례하는데, MLE에서 구한 방식과 유사하게 답을 추론할 수 있음.
+            - $\theta_{MAP}^* = \frac{\alpha_H+\beta_H-1}{\alpha_H+\beta_H-1+\alpha_T+\beta_T-1}$
+
+  - MLE는 관측 결과에 민감하다는 것이 단점이 될 수 있음
+
+    - 정상적인 동전임에도 던졌을 때 모두 앞면만 나왔다면 MLE는 이 동전을 unbalanced coin이라고 판단할 것임
+
+## Density Estimation
+
+### Gaussian Distribution (a.k.a. Normal Distribution)
+
+- $N(x;\mu, \sigma) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$
+  - ';' 기호는 parameterized by를 의미
+    - 즉, $x$의 probability는 $\mu$와 $\sigma$에 의해 parameterized.
+    - $\mu$와 $\sigma$는 이 Normal distribution의 parameter이고, $x$는 하나의 data point가 된다.
+- Happens frequently in many applications, natural phenomenon
+  - 반대로, 많은 자연 현상들이 Gaussian distribution으로 표현 가능하다.
+- Favorable characteristics
+  - 서로 independent한 여러 distribution의 합은 gaussian distribution으로 수렴함(the central limit theorem)
+  - 최소한의 prior knowledge(i.e., max entropy)를 model에 encode한다. <span style="color:red">???</span>
+    - Max entropy를 가지는 실수 x의 probability distribution이다.
+      - Entropy: $H[P]\equiv-E\log P(x)=-\int P(x)logP(x)dx$인데, 
+      - 이 값은 Probability distribution P가 적절한 $\mu$와 $\sigma$를 가진(전부는 아님) gaussian distribution일 때 최대가 된다.
+- d-dimensional vector space에서의 multivariate gaussian distribution으로 확장 가능
+
+### Mixture of Distributions
+
+### Self-Information & Entropy
+
+### Cross Entropy & Kullback-Leibler (KL) Divergence
