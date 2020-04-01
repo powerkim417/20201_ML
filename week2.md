@@ -174,6 +174,8 @@
          1. let $P(\theta)\sim \mathsf{Beta}(\beta_H, \beta_T)\equiv \frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)}$ (prior distribution)
             - Beta distribution 사용
             - 게임에 참여하기 전에, 확률이 $\theta$라고 미리 가정
+            - $\beta$는 prior를 의미
+              - 시행 횟수가 늘어날 수록, prior에 대한 중요도 감소
          2. $P(\alpha_H, \alpha_T|\theta)\equiv\theta^{\alpha_H}(1-\theta)^{\alpha_T}$ (likelihood)
          3. posterior $\propto$ prior * likelihood = $\theta^{\alpha_H}(1-\theta)^{\alpha_T}\cdot\frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)} $
             - 즉, posterior $\propto \frac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$
@@ -207,6 +209,76 @@
 
 ### Mixture of Distributions
 
+- Real-world environment에서, 하나의 distribution은 여러 종류의 같거나 다른 distribution들이 혼합된 것이다.
+
+- Gaussian mixture model
+
+  - 가장 강력하고 보편적인 mixture model
+  - universal approximator
+    - "모든 periodic function은 sin, cos function들의 합으로 근사할 수 있다" 라는 Fourier series의 concept
+      - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402011552041.png" alt="image-20200402011552041" style="zoom:50%;" />
+    - 하지만, 때로는 특정 periodic function을 나타내기 위해 무한 개의 sin, cos function들이 필요하듯이 <u>특정 distribution을 나타내는 데도 무한 개의 gaussian distribution이 필요할 수 있음.</u>
+
+- Mixture model
+
+  - $P(x) = \underset{i}\sum P(C=i)P(x|C=i)$, $P(C)$는 categorical distribution over items
+  - 만약 $P(x|C=i)$가 모든 $i$에 대해 Gaussian distribution이라면, $P(x)$는 mixture of Gaussian
+  - $P(C=i)$: prior, 즉 <u>$x$가 관찰되기 전에</u> categorical variable $C$에 대해 가지는 belief
+  - $P(C|x)$: posterior probability
+  - 이를 이용해서 MLE 또는 MAP를 하면 됨
+  - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402012941385.png" alt="image-20200402012941385" style="zoom:80%;" />
+  - 즉, Gaussian mixture model을 적용하는 데는 expectation, maximization algorithm 등이 필요!
+
+- "Fitting" a gaussian mixture model to the following data
+
+  - "Fitting"은 해당 data를 가장 잘 표현할 수 있는 (hyper)parameter를 찾는 것이다.
+
+    ![image-20200402013235892](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402013235892.png)
+
 ### Self-Information & Entropy
 
+- Information quantity는 probability에 반비례.. by Claude Shannon
+- **event $x$에 대한 Self-information: $I(x) = -\log P(x)$**
+  - 로그의 밑은 2, 그리고 $I(x)$가 음수임에 주의할 것
+  - 'Summer is hot'과 같은 문장은 모두 아는 사실이기 때문에 유용한 정보를 전달하지 않음
+    - 'summer is hot'에 대한 확률이 1이라고 하면 quantity는 0이 된다.
+  - $P(x)=1$(무조건 일어남)일 때, $I(X)=-\log1=0$
+  - $P(x)=0$(절대 일어나지 않음)일 때, $I(X)=-\log0=-\infin$
+- **Distribution P에 대한 Entropy: $H[X]=E_{X\sim P}[I(X=x)]=-E_{X\sim P}[\log P(X)]$**
+  - 의미: distribution P에서 도출한 event x에 대한 expected amount of information
+    - distribution P에서 도출한 정보를 encode하는데 필요한 최소의 bit 수
+      - Ex) X가 각각 50% 확률로 0 또는 1의 2가지 경우가 될 때,
+        - $H[X]=-\log (0.5)\cdot0.5 + -\log (0.5)\cdot0.5 = 1$ 
+        - 즉, 이 경우 expected information은 1이며,
+        - random variable X를 encode하는 데 1bit가 필요하다.
+          - sending 0 or 1 over communication channel
+      - Ex) {0.25, 0.25, 0.25, 0.25}일 때는 2bit
+    - distribution P의 정보를 전달하는 가장 좋은 coding scheme
+
 ### Cross Entropy & Kullback-Leibler (KL) Divergence
+
+#### Entropy & Cross Entropy
+
+- $H(P)$: distribution P에 대한 entropy
+  - minimum number of bits
+  - 정보에 대한 놀람도?
+  - $-E_{X\sim P}[\log P(x)]$
+- $H(P, Q)$: distribution P와 Q에 대한 cross entropy
+  - coding scheme이 Q에 optimized 되어있을 때, P의 정보를 전달할 때 필요한 bit 수
+  - $H(P)\le H(P, Q)$가 항상 성립 (Gibbs' inequality)
+  - $-E_{X\sim P}[\log Q(x)]$
+- Ex) P가 small person이고, Q가 large t-shirt라면
+  - small person이 large t-shirt를 입는다면 매우 불편할 것이다.
+  - small person은 small t-shirt를 입는 것이 가장 적절하며,
+  - H(P)는 small person이 가장 적절한 t-shirt를 입었을 때의 entropy
+  - H(P, Q)는 small person이 Q에 해당하는 large t-shirt를 입었을 때의 entropy
+
+#### KL Divergence
+
+- 서로 다른 distribution P와 Q에 대해, 두 distribution의 difference를 측정하는 지표
+  - $D_{KL}(P||Q)=E_{X\sim P}\left[\log\frac{P(x)}{Q(x)}\right]=E_{X\sim P}[\log P(x)-\log Q(x)]$
+    $=\int P(x)(\log P(x)-\log Q(x))dx = \int P(x)\log P(x)-\int P(x)\log Q(x)dx $
+    $=-H(P)+H(P,Q)$
+- 즉, $D_{KL}(P||Q)=-H(P)+H(P,Q)$
+  - Gibbs' inequality에 의해 항상 $D_{KL}(P||Q)\ge0$ (non-negative)
+
