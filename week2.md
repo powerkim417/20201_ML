@@ -62,7 +62,7 @@
 
 #### Variance
 
-- $Var(f(x)) = E[(f(x)-E[f(x)])^2]$
+- $Var(f(x)) = E\left[(f(x)-E[f(x)])^2\right]=E[\{f(x)\}^2]-(E[f(x)])^2$ (제곱의 평균 - 평균의 제곱)
 
 #### Covariance
 
