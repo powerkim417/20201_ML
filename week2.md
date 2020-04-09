@@ -263,7 +263,16 @@
   - 정보에 대한 놀람도?
   - $-E_{X\sim P}[\log P(x)]$
 - $H(P, Q)$: distribution P와 Q에 대한 cross entropy
-  - coding scheme이 Q에 optimized 되어있을 때, P의 정보를 전달할 때 필요한 bit 수
+  - the # of needed bits to identify an event drawn P where the coding scheme is optimized toward Q (coding scheme이 Q에 optimized 되어있을 때, P의 정보를 전달할 때 필요한 bit 수)
+    - Ex) 미국과 영국에서 알파벳(A, B만 존재)을 사용할 때, 모스 코드로 이 알파벳의 sequence를 보내려 한다.
+      - 미국에서는 A 70% B 30% 빈도, 영국에서는 A 30% B 70% 빈도로 사용
+      - 여기서 Optimal coding scheme이란?
+        - 미국에서는 더 자주 사용하는 A에 "."을 대응시키고, B에 "_"를 대응시키는 것
+          - 더 짧은 signal(여기서는 ".")이 많을 수록 efficiency(transmission rate)가 증가하므로 위와 같이 대응시킬 때 같은 시간 안에 더 많은 정보를 보낼 수 있음(Maximize the volume of information transfered)
+        - 반대로, 영국에서는 A에 "-", B에 "."을 대응시켜야 가장 효율적인데...
+        - 만약 영국에서 미국의 coding scheme(A=".", B="-")을 사용하게 된다면?
+          - 영국에서 가장 적합한 coding scheme을 사용하는 것에 비해 덜 효율적일 것이다(inefficiency)!
+      - Cross Entropy는 이러한 "Inefficiency"를 나타내는 지표
   - $H(P)\le H(P, Q)$가 항상 성립 (Gibbs' inequality)
   - $-E_{X\sim P}[\log Q(x)]$
 - Ex) P가 small person이고, Q가 large t-shirt라면
