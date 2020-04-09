@@ -51,7 +51,6 @@
     - 일반적인 ML에서 $P(a|b,c), P(b|c)$와 같은 값이 주로 계산되어 있으므로, 이 값들을 통해 $P(a,b,c)$를 구하게 된다.
 - Conditional Independence
   - a와 b가 independent할 때,  $P(a,b|c) = P(a|c)*P(b|c)$
-- $P(Y=y\vert X)$
 
 ### Expectation, Variance, and Covariance
 
