@@ -238,7 +238,7 @@ Feature engineering은 최악의 경우 노력에 비해 아무 성과도 얻지
 
 ### Fully Connected Layer
 
-- $\sigma(Wh_i+b)$: Fully Connected Layer in Deep Learning
+- $h_{i+1}=\sigma(Wh_i+b)$: Fully Connected Layer in Deep Learning
   - Logistic Regression에서 특별한 의미를 가지고 있음
   - $W$: linear transformation matrix
   - $h_i$: hidden vector at layer $i$
