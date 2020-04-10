@@ -86,7 +86,7 @@
 
 #### Correlation
 
-- $Corr(f(x), g(y)) = \frac{Cov(f(x), g(y)))}{\sigma_x*\sigma_y}$
+- $Corr(f(x), g(y)) = \dfrac{Cov(f(x), g(y)))}{\sigma_x*\sigma_y}$
   - $Corr(f(x), (y))\in[-1,1]$
 - ![image-20200329153001316](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200329153001316.png)
 
@@ -110,7 +110,7 @@
     - parameter로 구성된 확률모형
     - 일반적으로 미리 주어짐
   - $P(X|\theta)$: Likelihood
-    - parameter $\theta#가 주어졌을 때, 관측치 X가 나타날 확률
+    - parameter $\theta$가 주어졌을 때, 관측치 X가 나타날 확률
   - $P(\theta|X)$: Posterior probability
     - 관측치 X가 주어졌을 때, $\theta$의 parameter를 가지는 확률모형
   - 즉, **"Prior probability와 likelihood를 통해 Posterior probability를 구하는 것"**
@@ -164,25 +164,25 @@
          5. $\ln{\theta^{\alpha_H}(1-\theta)^{\alpha_T}}$이 concave function이므로, 이에 대한 도함수를 0으로 만드는 $\theta$값이 구하고자 하는 argmax 값이 된다.
 
             - $\frac{d}{d\theta}\ln{\theta^{\alpha_H}(1-\theta)^{\alpha_T}}=0$
-            - $\frac{\delta}{\delta\theta}(\alpha_H \ln\theta+\alpha_T \ln(1-\theta)) = \frac{\alpha_H}{\theta}-\frac{\alpha_T}{1-\theta} = 0$
+            - $\dfrac{\partial}{\partial\theta}(\alpha_H \ln\theta+\alpha_T \ln(1-\theta)) = \dfrac{\alpha_H}{\theta}-\dfrac{\alpha_T}{1-\theta} = 0$
             - $\theta_{MLE}^*=\frac{\alpha_H}{\alpha_H+\alpha_T}$
             - 즉, 전체 시행 중 앞면이 $\alpha_H$번 나올 가능성이 가장 높은 확률 $\theta$는 위의 값이 된다.
 
        - MAP(Posterior를 최대로)
 
-         1. let $P(\theta)\sim \mathsf{Beta}(\beta_H, \beta_T)\equiv \frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)}$ (prior distribution)
+         1. let $P(\theta)\sim \mathsf{Beta}(\beta_H, \beta_T)\equiv \dfrac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)}$ (prior distribution)
             - Beta distribution 사용
             - 게임에 참여하기 전에, 확률이 $\theta$라고 미리 가정
             - $\beta$는 prior를 의미
               - 시행 횟수가 늘어날 수록, prior에 대한 중요도 감소
          2. $P(\alpha_H, \alpha_T|\theta)\equiv\theta^{\alpha_H}(1-\theta)^{\alpha_T}$ (likelihood)
-         3. posterior $\propto$ prior * likelihood = $\theta^{\alpha_H}(1-\theta)^{\alpha_T}\cdot\frac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)} $
-            - 즉, posterior $\propto \frac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$
-         4. $\theta_{MAP}^* = \underset{\theta}{\arg\max}\frac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$를 구한다.
+         3. posterior $\propto$ prior * likelihood = $\theta^{\alpha_H}(1-\theta)^{\alpha_T}\cdot\dfrac{\theta^{\beta_H-1}(1-\theta)^{\beta_T-1}}{B(\beta_H, \beta_T)} $
+            - 즉, posterior $\propto \dfrac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$
+         4. $\theta_{MAP}^* = \underset{\theta}{\arg\max}\dfrac{\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}}{B(\beta_H, \beta_T)}$를 구한다.
             - 식의 형태가 beta distribution과 비슷한 형태이므로, 이를 활용
               - $\mathsf{Beta}(\alpha_H+\beta_H, \alpha_T+\beta_T)$
          5. 위의 식이 $\theta^{\alpha_H+\beta_H-1}(1-\theta)^{\alpha_T+\beta_T-1}$에 비례하는데, MLE에서 구한 방식과 유사하게 답을 추론할 수 있음.
-            - $\theta_{MAP}^* = \frac{\alpha_H+\beta_H-1}{\alpha_H+\beta_H-1+\alpha_T+\beta_T-1}$
+            - $\theta_{MAP}^* = \dfrac{\alpha_H+\beta_H-1}{\alpha_H+\beta_H-1+\alpha_T+\beta_T-1}$
 
   - MLE는 관측 결과에 민감하다는 것이 단점이 될 수 있음
 
@@ -192,8 +192,8 @@
 
 ### Gaussian Distribution (a.k.a. Normal Distribution)
 
-- $N(x;\mu, \sigma) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$
-  - ';' 기호는 parameterized by를 의미
+- $N(x;\mu, \sigma) = \dfrac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$
+  - <u>';' 기호는 parameterized by를 의미</u>
     - 즉, $x$의 probability는 $\mu$와 $\sigma$에 의해 parameterized.
     - $\mu$와 $\sigma$는 이 Normal distribution의 parameter이고, $x$는 하나의 data point가 된다.
 - Happens frequently in many applications, natural phenomenon

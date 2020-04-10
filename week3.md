@@ -18,10 +18,12 @@
     - $X$: Feature matrix(n*d)
       - n: sample의 수(Ex. 33명의 사람)
       - d: feature의 수(Ex. 1개(age))     (d+1)..
+      - $\begin{pmatrix}31세&180cm&70kg\\30세&160cm&50kg\end{pmatrix}$ 
     - $Y$: Ground truth(Ex. SBP)
       - 유추하고자 하는 값에 대해 표본들이 취하고 있는 값들
     - $\theta$: Parameters to learn
       - Ex) $\theta_1$: 81.54, $\theta_2$: 1.222
+      - 위의 예시 행렬의 경우 1+3개 필요. 4*1 행렬이 될 것임
     - $X\theta-Y$: Error of prediction
       - $X\theta$: Predicted value
       - $(X\theta-Y)^\top$는 $\begin{pmatrix}e_1&e_2&..\end{pmatrix}$ 형태이고, $(X\theta-Y)$는 $\begin{pmatrix}e_1\\e_2\\..\end{pmatrix}$ 형태이므로 둘을 곱하면 $e_1^2+e_2^2+...$ 형태의 하나의 scalar가 나온다. (Sum Squared Error)
@@ -38,7 +40,7 @@
       $=\theta^\top X^\top X\theta-2Y^\top (X\theta)+Y^\top Y$ (parabola 형태이므로, 미분하여 최소값을 찾는다.)
     - vector에 대한 미분(여기서 X는 vector이고 A는 matrix)
       - ![image-20200405185019699](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200405185019699.png)
-    - $\dfrac{\delta\mathcal{L}}{\delta\theta}=X^\top X\theta+X^\top X\theta-2X^\top Y=2X^\top X\theta-2X^\top Y=0$
+    - $\dfrac{\partial\mathcal{L}}{\partial\theta}=X^\top X\theta+X^\top X\theta-2X^\top Y=2X^\top X\theta-2X^\top Y=0$
     - $\therefore \theta^*=(X^\top X)^{-1}X^\top Y$
       - 그러나, 만약 **n<d**일 경우 $(X^\top X)^{-1}$와 같은 식이 나올 수 없다.
         - 샘플(n)의 수가 아주 적을 경우, 이 적은 수의 샘플에서 큰 양의 parameter(d)를 learn해야 하는데, (미지수가 d개인 연립방정식에 n개의 해만을 대입하므로 결정이 되지 않는 느낌???)<span style="color:red">???</span>
@@ -123,7 +125,7 @@
       $\log\dfrac{p(x)}{1-p(x)}>0$
       $\therefore \vec{\beta}^\top\cdot\vec x>0$
       - Logit > 0인 경우, $\vec{x}$ belongs to class 1
-      - Logit < 0인 경우, $\vec{x}​ belongs to class 0
+      - Logit < 0인 경우, $\vec{x}$ belongs to class 0
       - Logit = 0인 경우, cannot decide
 
 ### Visualization of Logistic Regression
