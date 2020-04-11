@@ -164,7 +164,7 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
   - 2nd order Taylor expansion 식을 vector에 대해 확장하면 다음과 같다.
   - $f(\theta)=f(a)+\nabla f(a)^\top(\theta-a)+\dfrac{1}{2}\nabla^2f(a)||\theta-a||_2^2$
     - This 2nd-order Taylor expansion is accurate around $\theta=a$
-  - $\nabla^2f(x)=\dfrac{1}{t}I=\begin{pmatrix} \dfrac{1}{t} & 0 & .. & 0 \\ 0 & \dfrac{1}{t} & .. & 0 \\ .. & .. & .. & .. \\ 0 & 0 & .. & \dfrac{1}{t}\end{pmatrix}$ 이라고 가정할 때,
+  - $\nabla^2f(x)=\dfrac{1}{t}I=\begin{pmatrix} \dfrac{1}{t} & 0 & \cdots & 0 \\ 0 & \dfrac{1}{t} & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & \dfrac{1}{t}\end{pmatrix}$ 이라고 가정할 때,
   - $f(\theta)=f(a)+\nabla f(a)^\top(\theta-a)+\dfrac{1}{2t}||\theta-a||_2^2$
     - $\dfrac{1}{2t}||\theta-a||_2^2$: Proximal term ($\theta$ should be close to $a$)
   - <span style="color:red">여기서부터 이해 하나도 안됨</span>
@@ -177,10 +177,6 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
     - 따라서, Gradient descent method는 finding minimization position of 2nd-order taylor expansion approximation와 같다.<span style="color:red">??</span>
 
 ### Geometrical Interpretation
-
-#### Level Set
-
-- 정의: objective value가 같은 모든 점들의 집합
 
 ##### 예시
 
@@ -200,9 +196,47 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
 
   - 1개의 circle은 1개의 level set을 만들 것이다.
 
+#### Level Set
+
+- 정의: objective value가 같은 모든 점들의 집합
+
 #### Gradient
 
-25분 20초
+- <u>Increasing direction of objective function</u>
+
+  <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200411035215139.png" alt="image-20200411035215139" style="zoom: 50%;" />
+
+- Gradients are perpendicular to tangent lines(접선) to the level set.
+
+  - Ex)  ![image-20200411155639961](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200411155639961.png)와 같은 경우
+    - $f(x,y)=x^2+y^2$
+    - $\nabla f(x,y)=\begin{bmatrix}\dfrac{\partial}{\partial x}(x^2+y^2)\\\dfrac{\partial}{\partial y}(x^2+y^2)\end{bmatrix}=\begin{bmatrix}2x\\2y\end{bmatrix}$
+    - 그림에서 빨간 점의 경우 $x=0, y<0$이므로, $\nabla f(x,y)=\begin{bmatrix}0\\2y\end{bmatrix}$가 되어 gradient는 아래로 향하는 vector가 되고, line tangent와는 수직이 된다.
+      - 이는 다른 모든 점에 대해서도 성립한다.
+
+### Gradient Descent의 문제점
+
+- 특정 상황에서 잘 작동하지 않음(e.g. Zig-zag problem)
+
+  <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200411162944976.png" alt="image-20200411162944976" style="zoom:80%;" />
+
+  - 이상적인 trajectory optimization은 오른쪽 그림처럼 straight하게 내려가야 하지만, gradient descent를 이용하면 왼쪽 그림처럼 zig-zag 모양으로 trajectory optimization이 진행된다.
+
+- 이러한 zig-zag problem을 해결하기 위해서는 "real" 2nd order derivative method를 사용해야 한다. (e.g. L-BFGS)
+
+  - 여기서는 2차항을 $\dfrac{1}{t}I$ 이라고 예측할 수 없다.
+  - 이 방법에서는 Hessian Matrix를 계산해야 하는데, quadratic workload가 소요된다.
+
+- Hessian Matrix
+
+  - $H_{i,j}=\dfrac{\partial^2f}{\partial x_i \partial x_j}$
+  - n개의 parameter를 learn해야 할 때 $H$의 size는 n\*n\*d(vector dimension)
+    - 이 때, $n^2$ term이 나오므로 일반적으로 계산하기 힘들어서 prohibited.
+    - 이러한 이유로 인해 결국 gradient descent에 의존하게 된다.
+
+##### 결론
+
+- Gradient descent는 zig-zag problem이라는 문제가 있지만, 이를 해결하기 위한  "real" 2nd order derivative method는 일반적으로 계산하기 힘들어서 결국 gradient descent를 사용해야 함
 
 
 
