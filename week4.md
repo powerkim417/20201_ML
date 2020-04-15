@@ -169,6 +169,7 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
     - $\dfrac{1}{2t}||\theta-a||_2^2$: Proximal term ($\theta$ should be close to $a$)
   - <span style="color:red">여기서부터 이해 하나도 안됨</span>
   - 위 식에서 $f(x)$를 $f'(x)$로 바꾸면, $f'(\theta)=f(a)+\nabla f(a)^\top(\theta-a)+\dfrac{1}{2t}||\theta-a||_2^2$
+    - $f'$는 미분이 아니라 $f$와 구분짓기 위한거..
   - 그러면 $\underset{\theta}{\mathrm{argmin}}f'(\theta)$을 구하기 위해 우항을 minimize하면
   - $\theta^*=a-t\nabla f(a)$ (taylor expansion을 최소로 하는 값, 즉 next position)
     - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200411034536034.png" alt="image-20200411034536034" style="zoom:80%;" />
@@ -222,9 +223,8 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
 
   - 이상적인 trajectory optimization은 오른쪽 그림처럼 straight하게 내려가야 하지만, gradient descent를 이용하면 왼쪽 그림처럼 zig-zag 모양으로 trajectory optimization이 진행된다.
 
-- 이러한 zig-zag problem을 해결하기 위해서는 "real" 2nd order derivative method를 사용해야 한다. (e.g. L-BFGS)
+- 이러한 zig-zag problem을 해결하기 위해서는 2차항을 $\dfrac{1}{t}I$ 이라고 예측하지 않고, "real" 2nd order derivative method를 사용해야 한다. (e.g. L-BFGS)
 
-  - 여기서는 2차항을 $\dfrac{1}{t}I$ 이라고 예측할 수 없다.
   - 이 방법에서는 Hessian Matrix를 계산해야 하는데, quadratic workload가 소요된다.
 
 - Hessian Matrix
