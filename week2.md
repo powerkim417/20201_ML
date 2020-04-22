@@ -17,7 +17,7 @@
     - $P(X\in[a,b]) \equiv \int_a^b p(x)dx = \int_a^b P(X=x)dx$ 
     - Probability Density Function
     - Ex) Uniform dist. between 1 and 3 $(U[1,3]$로 표기)
-      - ![image-20200328150448907](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200328150448907.png)
+      - ![image-20200328150448907](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200328150448907.png) 
       - 각 point에서의 probability는 제대로 정의할 수 없음
         - 위의 예시의 경우 P(X=1)=0.5 이지만, 그렇다고 X=1일 때의 확률이 0.5라는 것은 아니다.
           - continuous의 경우 확률을 P(X=x) 형태로 정의하는 것이 아니므로!
@@ -88,7 +88,7 @@
 
 - $Corr(f(x), g(y)) = \dfrac{Cov(f(x), g(y)))}{\sigma_x*\sigma_y}$
   - $Corr(f(x), (y))\in[-1,1]$
-- ![image-20200329153001316](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200329153001316.png)
+- ![image-20200329153001316](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200329153001316.png) 
 
 ### Covariance and Independence
 
@@ -215,7 +215,7 @@
   - 가장 강력하고 보편적인 mixture model
   - universal approximator
     - "모든 periodic function은 sin, cos function들의 합으로 근사할 수 있다" 라는 Fourier series의 concept
-      - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402011552041.png" alt="image-20200402011552041" style="zoom:50%;" />
+      - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402011552041.png" alt="image-20200402011552041" style="zoom:50%;" /> 
     - 하지만, 때로는 특정 periodic function을 나타내기 위해 무한 개의 sin, cos function들이 필요하듯이 <u>특정 distribution을 나타내는 데도 무한 개의 gaussian distribution이 필요할 수 있음.</u>
 
 - Mixture model
@@ -225,14 +225,14 @@
   - $P(C=i)$: prior, 즉 <u>$x$가 관찰되기 전에</u> categorical variable $C$에 대해 가지는 belief
   - $P(C|x)$: posterior probability
   - 이를 이용해서 MLE 또는 MAP를 하면 됨
-  - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402012941385.png" alt="image-20200402012941385" style="zoom:80%;" />
+  - <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402012941385.png" alt="image-20200402012941385" style="zoom:80%;" /> 
   - 즉, Gaussian mixture model을 적용하는 데는 expectation, maximization algorithm 등이 필요!
 
 - "Fitting" a gaussian mixture model to the following data
 
   - "Fitting"은 해당 data를 가장 잘 표현할 수 있는 (hyper)parameter를 찾는 것이다.
 
-    ![image-20200402013235892](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402013235892.png)
+    ![image-20200402013235892](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200402013235892.png) 
 
 ### Self-Information & Entropy
 
@@ -290,3 +290,52 @@
 - 즉, $D_{KL}(P||Q)=-H(P)+H(P,Q)$
   - Gibbs' inequality에 의해 항상 $D_{KL}(P||Q)\ge0$ (non-negative)
 
+---
+
+## Q&A
+
+### Beta Distribution
+
+- MAP에서 사용(perfect distribution for this problem)
+
+- Definition
+
+  - $f(x;\alpha, \beta)$: **probability of** the success **probability** is $x$ given $\alpha$ heads, $\beta$ tails
+
+    - 여기서는 동전 던지기에서 $\alpha$개의 head와 $\beta$개의 tail가 관측되었을 때 head가 나올 확률
+
+    <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200420210435518.png" alt="image-20200420210435518" style="zoom: 67%;" /> 
+
+    - $\alpha=\beta$일 때, $x$는 0.5일 때 가장 높은 함수값을 가지며, $x$가 0.5가 아닌 경우도 non-zero value를 가진다.
+    - $\alpha=5, \beta=5$일 때 $x=0.5$의 함수값이  $\alpha=2, \beta=2$일 때 $x=0.5$의 함수값보다 크다.
+      - 더 많이 관찰을 하고 앞뒷면이 같은 갯수가 나온 경우가  $x=0.5$일 확률이 더 높으므로!
+
+    <img src="C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200420210443615.png" alt="image-20200420210443615" style="zoom:67%;" /> 
+
+    - $\alpha=5, \beta=1$일 때가 $\alpha=2, \beta=1$일 때보다 true head probability가 1에 근접하며, $x=1$일 때의 함수값 또한 더 크다.
+      - 전자의 경우 head를 더 많이 관찰했으므로
+
+- Formal definition
+
+  - $f(x;\alpha, \beta)=\dfrac{1}{B(\alpha,\beta)}x^{\alpha-1}(1-x)^{\beta-1},$ where $B(\alpha,\beta)=\int_0^1x^{\alpha-1}(1-x)^{\beta-1}dx$
+    - $x$가 확률이므로 $x\in[0,1]$
+    - $x$가 head probability이므로 $x^{\alpha-1},(1-x)^{\beta-1}$은 각각 $(\alpha-1)$번의 head와 $(\beta-1)$번의 tail이 나올 확률을 의미
+
+### MAP Estimation
+
+Probability Distribution Function이 $f(x;\alpha,\beta)$ 형태일 때,
+
+- Prior: **A belief** you have before doing the coin flipping game
+  - Probability Distribution Function이 $f(x;\alpha,\beta)$ 형태일 때, prior는 $f(\theta;\beta_H,\beta_T)$로 나타낼 수 있다.
+  - ![image-20200423040313608](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200423040313608.png) 
+    - 지금까지 head 100회와 tail 100회가 나왔다면 head probability가 0.5일 것이라는 belief가 가장 높을 것이고, head 2회와 tail 200회가 나왔다면 head probability가 0에 가까울 것이라는 belief가 가장 높을 것이다.
+    - 여기서 반영하는 $\beta$값(사전 관측값)은 나의 belief를 형성하기 위한 parameter로, likelihood에서 말하는 observation과는 다르다!
+      - Likelihood의 observation은 "your observation"으로, 실제 시행한 후 반영할 관측값
+- Likelihood: The most probable head probability given **your observations**
+  - 실제 시행했을 때 head 50회와 tail 50회를 관측했다면 MLE는 $\theta_{MLE}=0.5$로 도출할 것이다.
+  - MLE의 경우 prior를 반영하지 않음
+- Posterior: A **combination** of <u>prior(prior belief)</u> <u>and likelihood(observation)</u>
+  - $\theta_{MAP}=f(x;\alpha_H+\beta_H,\alpha_T+\beta_T)$
+  - 실제 시행 결과($\alpha$)와 사전 정보($\beta$)를 모두 반영
+  - coin flipping 예제의 경우 처음에는 시행 횟수가 부족해 사전 정보($\beta$)에 의지하지만, 시행 횟수가 점점 많아질 경우 실제 시행 결과($\alpha$)의 비중이 높아져 MLE의 도출 결과에 수렴하게 된다.
+    - 즉, $\alpha_H,\alpha_T$가 매우 큰 값일 때 $\theta_{MAP}=\theta_{MLE}$

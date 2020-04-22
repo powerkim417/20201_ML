@@ -237,20 +237,3 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
 ##### 결론
 
 - Gradient descent는 zig-zag problem이라는 문제가 있지만, 이를 해결하기 위한  "real" 2nd order derivative method는 일반적으로 계산하기 힘들어서 결국 gradient descent를 사용해야 함
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(SVM은 week5에)
-
