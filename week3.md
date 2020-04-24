@@ -284,7 +284,7 @@ $\mathrm{Var}_D[\hat{f}(x;D)]=E_D[\{\hat{f}(x;D)\}^2]-E_D[\hat{f}(x;D)]^2$
 
 - squared error loss + Regularization term 의 형태로, 더 큰 weight(coefficient)가 suppress된다.
 
-- $\underset{\theta}{\arg\min}(X\theta-Y)^\top(X\theta-Y)+\lambda(\theta^{\top}\theta)=\underset{\theta}{\arg\min}||X\theta-Y||_2^2+\lambda||\theta||_2^2$
+- Optimization problem to solve ridge regression algorithm: $\underset{\theta}{\arg\min}(X\theta-Y)^\top(X\theta-Y)+\lambda(\theta^{\top}\theta)=\underset{\theta}{\arg\min}||X\theta-Y||_2^2+\lambda||\theta||_2^2$
   - Squared L2 norm(Euclidean distance의 제곱) 활용
   - $(X\theta-Y)^\top(X\theta-Y)$: Sum of squared error
   - $\lambda$: a hyperparameter to emphasize the regularization term
@@ -333,3 +333,58 @@ Least Absolute Shrinkage and Selection Operator
   - Ex) $\theta_1=10$, $\theta_3=0.0001$이면 $x_3$은 별로 중요하지 않다는 것을 알 수 있음
   - <span style="color:red">이건 다른 regression도 그런거 아닌가?</span>
 
+## Q&A
+
+### Lambda of Ridge
+
+#### Ridge Regression
+
+$\underset{\theta}{\arg\min}(X\theta-Y)^\top(X\theta-Y)+\lambda(\theta^{\top}\theta)$
+
+- $(X\theta-Y)^\top(X\theta-Y)$: squared error<u>(sum of prediction error)</u>
+- $\lambda(\theta^{\top}\theta)$: squared regularization<u>(sum of squared parameters)</u>
+- $\theta$: parameter to learn
+  - 즉, ridge regression algorithm을 풀기 위해서는 위의 두 경우를 모두 minimize해야 함.
+- Linear regression의 경우 regularization 부분이 없지만, ridge regression은 learn할 parameter 또한 minimize해야 한다.
+- $\lambda$: a coefficient of the regularization term
+  - $\lambda$가 클 경우 learned parameter(2번째 항)를 minimize 하도록 focus하고,
+  - $\lambda$가 작을 경우 error(1번째 항)을 minimize 하는 데만 focus한다. 
+
+#### $\lambda$의 역할
+
+- ML algorithm은 input에 굉장히 민감!
+  - 거의 동일한 두 input $x,x^{'}$가 있다 하더라도, 만약 $W$가 굉장히 크다면model output은 크게 다를 수 있다.(이 경우 too sensitive ML model)
+- 이러한 model을 less sensitive하게 만들려면, $\lambda$값을 늘이면 된다!
+  - 그러면 2번째 항이 커지면서 $\theta$에서 작은 숫자들을 찾게 된다<span style="color:red">???</span>
+- 즉, ridge에서의 $\lambda$ 및 regularization term은 overfitting 또는 sensitive model을 avoid하기 위해 존재!!
+
+#### Linear Regression vs. Ridge Regression
+
+- Sensitive model의 특징: high variance
+
+- Ridge가 더 작은 variance를 가짐
+  - e.g., 3가지 다른 input data로 학습시킨 linear regression model이 있을 때, 동일한 training sample을 넣으면 매우 다른 결과를 내지만, ridge regression model의 경우 그렇지 않다.
+  - regularization term 때문!(trained model이 input에 sensitive한 경우를 suppress함)
+  - Prediction accuracy와 model sensitivity 간의 balance를 추구
+  - 반면에, linear는 각 input에 대해 sensitive하다.(fully specialized to specific data)
+
+### Lasso's better interpretability
+
+#### Lasso Regression
+
+$\underset{\theta}{\arg\min}||X\theta-Y||_2^2+\lambda||\theta||_1$ (sum of squared error + <u>sum of absolute values</u> of parameters)
+
+#### Ridge Regression vs. Lasso Regression
+
+- 우리의 목적은 $\theta$를 minimize하는 것!
+- $\theta$가 첫 iteration에서 100에서 95로 감소할 때와, 10에서 5로 감소할 때
+  - Ridge의 경우 squared term이 있으므로 전자의 경우 loss가 100^2^-95^2^=975만큼 줄어들고, 후자의 경우 loss가 10^2^-5^2^=75만큼 줄어든다.
+  - 한편, Lasso의 경우 squared term 대신 absolute value를 사용하므로 두 경우 모두 loss가 5씩 줄어듦으로 동일하다.
+- Ridge는 큰 parameter를 잘 suppress하지만, 특정 parameter가 어느 정도 밑으로 작아지면 그 parameter에 대해서는 더 신경쓰지 않는다.
+- Lasso는 모든 parameter를 끝까지 minimize하여 0에 가까운 값으로 만드는데 focus한다!
+  - 한편, 0에 가까워진 parameter는 해당 feature가 중요하지 않다는 것을 의미!
+
+### Why do we minimize the parameters in Ridge/Lasso as well?
+
+- To make the trained model less sensitive to input! 
+  - 최종 목적: Decrease variance of model output!

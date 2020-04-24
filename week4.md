@@ -83,12 +83,14 @@ Learn해야 할 parameter: $w_0, w_j, \mu_j, \sigma_j(1\le j\le M-1)$
 
 <span style="color:red">ground truth를 hat으로 설명하던데, 잘못설명한건지 확인 필요</span>
 
+(수업에서는 e = ground truth - predict로 설명했는데, 실제로는 ground truth를 빼는 형태가 더 보편적이므로 그렇게 변형하여 필기했다. chain rule 과정에서 부호가 바뀌지만, 최종 식에 e가 있으므로 부호가 바뀌면 e의 값도 부호가 바뀌므로 결국 같은 식이 된다.)
+
 - 3-dimension의 vector $x$, 4개의 RBF(각각 다른 $\mu$ 및 $\sigma$), 2-dimension의 predicted output vector $\hat b$, ground truth에 의한 output vector $b$
 - vector를 각 RBF에 넣었을 때 서로 다른 scalar value가 나온다.
 - $\hat{b}$의 각 element는 RBF의 결과로 나오는 4개의 scalar value에 대한 weighted combination을 값으로 가진다.
   - $\hat{b}_0=W_{00}\cdot\mathrm{scalar_0}+W_{10}\cdot\mathrm{scalar_1}+..$
 - (Define a loss function) 실제 output 결과 $b$(ground truth)와, predicted output $\hat b$에 대해, 
-  - $e_j=b_j-\hat{b}_j$
+  - $e_j=\hat{b}_j-b_j$ (prediction - ground truth)
   - $E=\dfrac{1}{2}(e_0^2+e_1^2)=\dfrac{1}{k}\underset{k}\sum {e_k}^2$ (MSE)
 - 이제 그림 내의 $\mu_j, \sigma_j, W_{j,k}$에 대해 learn해야 한다!
 - (Back propagation)
@@ -102,11 +104,11 @@ Learn해야 할 parameter: $w_0, w_j, \mu_j, \sigma_j(1\le j\le M-1)$
     $=\dfrac{\partial E}{\partial e_k}\dfrac{\partial e_k}{\partial W_{j,k}}$ (by Chain rule)
     $=e_k\dfrac{\partial e_k}{\partial W_{j,k}}$ (by Partial derivation, $\dfrac{\partial E}{\partial e_k}=e_k$)
     $=e_k\dfrac{\partial e_k}{\partial \hat{b}_k}\dfrac{\partial \hat{b}_k}{\partial W_{j,k}}$ (by Chain rule)
-    $=-e_k\dfrac{\partial \hat{b}_k}{\partial W_{j,k}}$ (by Partial derivation, $\dfrac{\partial e_k}{\partial \hat{b}_k}=-1$)
-    $=-e_k\phi_j$ (by Partial derivation, $\hat{b}_k=...+W_{j,k}\cdot\mathrm{scalar_j}+...$ 꼴이므로 $\dfrac{\partial \hat{b}_k}{\partial W_{j,k}}=\mathrm{scalar}_j=\phi_j$)
-    $\therefore \Delta W_{j,k}=-e_k\phi_j$
-  - 이를 위 식에 다시 적용하면 ==$W_{j,k}=W_{j,k}+\lambda\cdot e_k\phi_j$==가 된다.
-    - 사실 올바른 표기는 ${W_{j,k}}^{(k+1)}={W_{j,k}}^{(k)}+\lambda\cdot e_k\phi_j$ 인데,
+    $=e_k\dfrac{\partial \hat{b}_k}{\partial W_{j,k}}$ (by Partial derivation, $\dfrac{\partial e_k}{\partial \hat{b}_k}=1$)
+    $=e_k\phi_j$ (by Partial derivation, $\hat{b}_k=...+W_{j,k}\cdot\mathrm{scalar_j}+...$ 꼴이므로 $\dfrac{\partial \hat{b}_k}{\partial W_{j,k}}=\mathrm{scalar}_j=\phi_j$)
+    $\therefore \Delta W_{j,k}=e_k\phi_j$
+  - 이를 위 식에 다시 적용하면 ==$W_{j,k}=W_{j,k}-\lambda\cdot e_k\phi_j$==가 된다.<u>(error = prediction - ground truth)</u>
+    - 사실 올바른 표기는 ${W_{j,k}}^{(k+1)}={W_{j,k}}^{(k)}-\lambda\cdot e_k\phi_j$ 인데,
     - 이 superscript는 iteration number를 의미한다.
 
 # 4-2. Gradient Descent
@@ -237,3 +239,72 @@ Widely-used to train machine learning model(e.g. Deep Neural Networks)
 ##### 결론
 
 - Gradient descent는 zig-zag problem이라는 문제가 있지만, 이를 해결하기 위한  "real" 2nd order derivative method는 일반적으로 계산하기 힘들어서 결국 gradient descent를 사용해야 함
+
+---
+
+## Q&A
+
+### Backpropagation for training neural networks
+
+#### Train a Fully Connected Network
+
+$x\to \mathsf{ReLU}(W_1x+b_1)\to \mathsf{ReLU}(W_1h_1+b_1)\to \dots \to$ Prediction(scalar value)
+
+- 이 Prediction에서 Squared error를 정의할 수 있는데,
+- Squared error(loss function) = $($ground truth - prediction$)^2$ or $($prediction - ground truth$)^2$
+  - 두 식 모두 전개하면 같으므로 순서 상관 없음
+- ML model을 train하는 것은 optimization problem(=loss minimization problem)을 해결하는 것과 같다.
+- $\Delta_{W_i}\mathsf{Loss}=\dfrac{\partial\mathsf{Loss}}{\partial W_i}=\dfrac{\partial h_1}{\partial W_i}\cdot\dfrac{\partial h_2}{\partial h_1}\cdot\dfrac{\partial h_3}{\partial h_2}\cdot\dots\cdot\dfrac{\partial \mathsf{Predict}}{\partial h_{last}}\cdot\dfrac{\partial\mathsf{Loss}}{\partial\mathsf{Predict}}$(Chain rule)
+  - 이렇게 변형하면 더 쉽게 계산할 수 있음!
+  - 이 경우 loss를 error로, error를 predict로 편미분했던 수업 설명과 달리 loss를 직접 predict로 편미분하여 부호로 혼동할 일이 없음!
+    - $\dfrac{\partial\mathsf{Loss}}{\partial\mathsf{Predict}}=2\cdot\mathsf{(Predict-Ground\ truth)}$
+
+### The meaning of the proximal term of the gradient descent
+
+- $\underset{\theta}{\arg\min}f(\theta)$를 solve하기 위한 Gradient Descent Algorithm: $\theta^{(k)}=\theta^{(k-1)}-\lambda\nabla f(\theta^{(k-1)})$
+  - $\theta^{(k)}$: the learned parameter after $k$ gradient descent iteration
+
+- $f(\theta)\approx f(a)+\nabla f(a)^\top(\theta-a)+\dfrac{1}{2t}||\theta-a||_2^2$ 로 approximate할 수 있는데,
+
+- 여기서 $\dfrac{1}{2t}||\theta-a||_2^2$가 proximal term!
+
+  - 이 때, 최적해 $\theta^*$는 a와 매우 근접해야 한다.
+
+- 여기서 $a=\theta^{(k-1)}, \theta=\theta^{(k)}$로 볼 수 있다.
+
+  ![image-20200425014709045](C:\Users\KJH\AppData\Roaming\Typora\typora-user-images\image-20200425014709045.png) 
+
+  - $\theta^{(k)}$가 $\theta^{(k-1)}$로부터 멀리 잡히면 error가 크게 잡히므로 근접한 위치에서 잡아야 함.
+  - <u>Gradient descent는 이 taylor approximation에서의 최소값 지점을 다음 $\theta$로 잡는다!</u>
+
+- 2차보다 더 높은 차수의 taylor approximation을 사용하면 더욱 근접한 값을 얻을 수 있다.
+
+### Gradient, Jacobian, Hessian Matrix
+
+#### Gradient
+
+Given a function $f: \mathbb{R}^n\to \mathbb{R}$,
+
+$\nabla f=\left(\dfrac{\partial f}{\partial x_1},\dfrac{\partial f}{\partial x_2},\dots,\dfrac{\partial f}{\partial x_n}\right)$ ($n$-dimension vector)
+
+#### Jacobian Matrix
+
+Given a function $f: \mathbb{R}^n\to \mathbb{R}^m$,
+
+$J_f=\begin{pmatrix} 
+\dfrac{\partial f_1}{\partial x_1} & \cdots & \dfrac{\partial f_1}{\partial x_n} \\
+\vdots & \ddots & \vdots \\
+\dfrac{\partial f_m}{\partial x_1} & \cdots & \dfrac{\partial f_m}{\partial x_n}
+\end{pmatrix}$ ($m\times n$ matrix)
+
+#### Hessian Matrix
+
+Given a function $f: \mathbb{R}^n\to \mathbb{R}$,
+
+$H(f)=\begin{pmatrix} 
+\dfrac{\partial^2 f}{\partial x_1^2} & \dfrac{\partial^2 f}{\partial x_1\partial x_2} & \cdots & \dfrac{\partial f}{\partial x_1\partial x_n} \\ \dfrac{\partial^2 f}{\partial x_2\partial x_1} & \dfrac{\partial^2 f}{\partial x_2^2} & \cdots & \dfrac{\partial f}{\partial x_2\partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\dfrac{\partial f}{\partial x_n\partial x_1} & \dfrac{\partial f}{\partial x_n\partial x_2}  & \cdots & \dfrac{\partial^2 f}{\partial x_n^2}
+\end{pmatrix}$ ($ n\times n$ matrix)
+
+만약 $f: \mathbb{R}^n\to \mathbb{R}^m$ 이라면, $H(f)$는 $ n\times n\times m$ matrix가 될 것이다.
