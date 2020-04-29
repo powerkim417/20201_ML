@@ -242,3 +242,66 @@ $K(a,b)$
 
 ## (Week 6 - Part 1 영상 내용)
 
+### SVM-equivalent QP
+
+- Maximize:
+  - $\overset{R}{\underset{k=1}{\sum}}\alpha_k-\dfrac{1}{2}\overset{R}{\underset{k=1}{\sum}}\overset{R}{\underset{l=1}{\sum}}\alpha_k\alpha_lQ_{kl}$
+    - $Q_{kl}=y_ky_l(x_k\cdot x_l)$
+- Constraints:
+  - $0\le \alpha_k\le C$
+  - $\overset{R}{\underset{k=1}{\sum}}\alpha_ky_k=0$
+- Then define:
+  - $w=\overset{R}{\underset{k=1}{\sum}}\alpha_ky_kx_k$
+  - $b=y_K(1-\epsilon_K)-x_K\cdot w_K$ where $K=\underset{k}{\arg\max}\alpha_k$
+- Then classify with:
+  - $f(x,w,b)=sign(w\cdot x-b)$
+
+### How to derive QP
+
+#### Lagrange Multiplier Method
+
+- constraint를 없애기 위한(hard constraint $\to$ soft constraint) 방법으로 ML에서 많이 사용됨
+- Ex) $\underset{x}{\arg\min}\ x^2$ such that $x\ge b$를 구하는 문제(Primal Problem)
+  - 여기서 $x\ge b$는 Hard constraint! (=Must not be violated)
+- Soft constraint relaxation 적용
+  - $L(x,\alpha)=x^2-\alpha(x-b)$
+  - Dual variable
+    - $x$: primal variable
+    - $\alpha$: Lagrange Multiplier (Doesn't exist in the original form)
+  - 여기서 $\alpha(x-b)$는 Soft constraint! (violate해도 되나, 아주 큰 penalty가 적용됨)
+- 이제 문제는 $\underset{x}{\min}\ \underset{\alpha\ge0}{\max}\ L(x,\alpha)$을 만족하는 $x, \alpha$를 찾는 문제로 바꿀 수 있음(Dual Problem)
+  - min과 max의 순서는 바뀌어도 됨
+  - $\alpha\ge0$이라는 새로운 조건이 생겼지만 이 조건은 만족하기 쉬움!
+  - Zero-sum 2-player min-max game과 같음
+    - Objective는 $L$ 하나지만, variable $x$는 이를 최대한 작게 하려 하고, variable $\alpha$는 이를 최대한 크게 하려 한다.
+    - Turn 1. $(x-b)$가 음수일 경우(constraint violation)
+      - $\alpha=\infin$이 되고, $L(x,\alpha)$ 또한 $\infin$이 된다.
+    - Turn 2. $\alpha=\infin$ 이므로
+      - $L$을 minimize 하기 위해 $(x-b)$가 0이 되고, $L(x,\alpha)$는 $x^2$가 된다.
+  - 만약 constraint($x\ge b$)을 violate 하려 하면, $\alpha\ge0$이 objective에 penalty를 줄 것이다.
+    - $\alpha$는 constraint violation에 대한 amplifier 역할
+- 그렇다면, 충분히 큰 $\alpha$값을 어떻게 찾을까?
+  - 만약 $\alpha$값이 고정되면, $L(x,\alpha)$를 solve하는 것이 original problem을 solve하는 것보다 더 쉬워짐
+
+#### Apply to SVM
+
+<Primal Problem\> $\underset{w,b}{\arg\min}\ \dfrac{1}{2}w\cdot w$ such that $\left((w\cdot x_j)+b\right)y_j\ge1, \forall j$
+
+\<Dual Problem\> $L(w,b,\alpha)=\dfrac{1}{2}w\cdot w-\underset{j}\sum\alpha_j\left[\left(w\cdot x_j+b\right)y_j-1\right]$
+
+- $\underset{w,b}{\min}\ \underset{\alpha\ge0}{\max}\ L(w,b,\alpha)$, where $\alpha=[\alpha_1,\alpha_2,\dots,\alpha_{|T|}]$ ($|T|$: # of training samples)
+- 즉 $w^*, b^*, \alpha^*$를 찾아야 하는데, 이 때 KKT condition을 사용한다.
+  - <u>이렇게 찾는 경우를 analytically find라고 하는데, 이는 컴퓨터 소프트웨어 등의 learning을 이용하지 않고 단순히 계산으로만 도출해낼 수 있는 경우를 의미</u>
+  - Optimal solution은 KKT condition을 만족해야 한다!
+    - KKT condition 중 stationary condition: $\dfrac{\partial L}{\partial x}=0$
+- 한편, $\dfrac{1}{2}w\cdot w$는 quadratic, $\underset{j}\sum\alpha_j\left[\left(w\cdot x_j+b\right)y_j-1\right]$는 linear이므로 $L(w,b,\alpha)$는 convex!
+  - $\dfrac{\partial L}{\partial w}=w-\underset{j}\sum\alpha_jy_jx_j=0,\ \dfrac{\partial L}{\partial b}=-\underset{j}\sum\alpha_jy_j=0,\ \dfrac{\partial L}{\partial \alpha}=(w\cdot x_j+b)y_j=0$
+    (KKT Stationary condition)
+  - 위의 조건에 의해 최적의 조건은 $w=\underset{j}\sum\alpha_jy_jx_j,\ \underset{j}\sum\alpha_jy_j=0$임을 알 수 있다.
+
+#### 결론
+
+- 어떠한 문제가 constraint가 복잡하거나 한 이유로 풀기 매우 어렵다면, Lagrange function를 사용하면 문제를 더 간결한 동치의 문제로 변환할 수 있다.
+
+- 그 중 Lagrange function이 convex한 경우는 KKT stationary condition을 적용하여 solution을 analytical하게 도출할 수 있다.
+- 이렇게 Lagrange function이 간단한 형태라면 위와 같이 계산할 수 있지만, 이 함수가 복잡하다면 Dual Ascent, ADMM(Alternating Direction Method of Multipliers) 등의 방법을 사용
