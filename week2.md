@@ -110,7 +110,7 @@
     - parameter로 구성된 확률모형
     - 일반적으로 미리 주어짐
   - $P(X|\theta)$: Likelihood
-    - parameter $\theta$가 주어졌을 때, 관측치 X가 나타날 확률
+    - parameter $\theta$가 주어졌을 때, ~~관측치 X~~가 나타날 확률
   - $P(\theta|X)$: Posterior probability
     - 관측치 X가 주어졌을 때, $\theta$의 parameter를 가지는 확률모형
   - 즉, **"Prior probability와 likelihood를 통해 Posterior probability를 구하는 것"**
